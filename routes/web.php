@@ -13,6 +13,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/login', function () {
+    return view('auth.login');
+});
+
+// // rute untuk halaman login
+// Route::middleware(['guest'])->group(function () {
+//     Route::get('/login', [App\Http\Controllers\AuthController::class, 'showLoginForm'])->name('login.form');
+//     Route::post('/login', [App\Http\Controllers\AuthController::class, 'login'])->name('login');
+// });
