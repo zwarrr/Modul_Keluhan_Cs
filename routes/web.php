@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,17 +15,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
+// otomatis redirect 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/login');
 });
 
-Route::get('/login', function () {
-    return view('auth.login');
+// rute untuk halaman login
+Route::middleware(['guest'])->group(function () {
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
+    Route::post('/login', [AuthController::class, 'login'])->name('login');
 });
 
-// // rute untuk halaman login
-// Route::middleware(['guest'])->group(function () {
-//     Route::get('/login', [App\Http\Controllers\AuthController::class, 'showLoginForm'])->name('login.form');
-//     Route::post('/login', [App\Http\Controllers\AuthController::class, 'login'])->name('login');
-// });
+Require __DIR__.'/auth.php';

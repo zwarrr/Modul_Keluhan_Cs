@@ -1,3 +1,3 @@
 <x-layouts.app>
-    <h1>Ini cs wo</h1>
+    <h1>cssss</h1>
 </x-layouts.app>

@@ -17,7 +17,26 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/home';
+    public const HOME = '/redirect-by-role';
+    /**
+     * Get the post-login redirect path based on user role.
+     *
+     * @return string
+     */
+    public static function redirectToByRole()
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return '/login';
+        }
+        if ($user->role === 'admin') {
+            return '/admin/dashboard';
+        } elseif ($user->role === 'cs') {
+            return '/cs/dashboard';
+        } else {
+            return '/dashboard';
+        }
+    }
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.

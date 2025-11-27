@@ -44,4 +44,21 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    // Relasi: User sebagai member dalam chat_sesi
+    public function chatSesiSebagaiMember()
+    {
+        return $this->hasMany(Chat_sesi::class, 'member_id');
+    }
+
+    // Relasi: User sebagai CS dalam chat_sesi
+    public function chatSesiSebagaiCs()
+    {
+        return $this->hasMany(Chat_sesi::class, 'cs_id');
+    }
+
+    // Relasi: Pesan yang dikirim user
+    public function pesan()
+    {
+        return $this->hasMany(Pesan::class, 'user_id');
+    }
 }

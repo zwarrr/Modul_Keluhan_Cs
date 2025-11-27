@@ -1,3 +1,3 @@
-<div>
-    <!-- Simplicity is the essence of happiness. - Cedric Bledsoe -->
-</div>
+<x-layouts.app>
+    <h1>member wo</h1>
+</x-layouts.app>
