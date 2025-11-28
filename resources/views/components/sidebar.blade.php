@@ -66,7 +66,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a href="/admin/costumer-services" class="nav-link {{ request()->is('admin/customer-services') ? 'active' : '' }}">
+                        <a href="/admin/costumer-services" class="nav-link {{ request()->is('admin/costumer-services') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-headset"></i>
                             <p>Data Customer Service</p>
                         </a>
@@ -75,20 +75,20 @@
                     <li class="nav-header">CHAT & KOMPLAIN</li>
 
                     <li class="nav-item">
-                        <a href="/admin/chat-sesi"
-                            class="nav-link {{ request()->is('admin/chat-sesi') ? 'active' : '' }}">
+                        <a href="/admin/sesi-chat"
+                            class="nav-link {{ request()->is('admin/sesi-chat/*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-comments"></i>
-                            <p>Semua Chat Sesi</p>
+                            <p>Semua Sesi Chat</p>
                         </a>
                     </li>
 
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a href="/admin/chat-monitor"
                             class="nav-link {{ request()->is('admin/chat-monitor') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-eye"></i>
                             <p>Monitoring Chat Berjalan</p>
                         </a>
-                    </li>
+                    </li> --}}
 
                     <li class="nav-header">LAPORAN</li>
 
@@ -120,7 +120,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a href="/cs/chat-aktif" class="nav-link {{ request()->is('cs/chat-aktif') ? 'active' : '' }}">
+                        <a href="/cs/chat" class="nav-link {{ request()->is('cs/chat') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-comments"></i>
                             <p>Chat Aktif</p>
                         </a>

@@ -18,6 +18,10 @@ class Chat_sesi extends Model
         'closed_by',
         'closed_at',
     ];
+
+    protected $attributes = [
+        'cs_id' => null,
+    ];
     // Relasi: Member (user) yang membuka sesi
     public function member()
     {
@@ -33,6 +37,6 @@ class Chat_sesi extends Model
     // Relasi: Pesan-pesan dalam sesi ini
     public function pesan()
     {
-        return $this->hasMany(Pesan::class, 'chat_sesi_id');
+        return $this->hasMany(Pesan::class, 'sesi_id');
     }
 }

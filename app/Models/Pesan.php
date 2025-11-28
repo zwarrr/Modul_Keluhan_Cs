@@ -18,13 +18,13 @@ class Pesan extends Model
     // Relasi: Sesi chat dari pesan ini
     public function chatSesi()
     {
-        return $this->belongsTo(Chat_sesi::class, 'chat_sesi_id');
+        return $this->belongsTo(Chat_sesi::class, 'sesi_id');
     }
 
     // Relasi: User pengirim pesan
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'member_id');
     }
 
     // Relasi: Parent pesan (jika reply)

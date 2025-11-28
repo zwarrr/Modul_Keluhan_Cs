@@ -40,6 +40,7 @@ Route::middleware(['guest:web'])->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login');
 });
 
+
 // rute untuk halaman login member
 Route::middleware(['guest:member'])->group(function () {
     Route::get('/member/login', [AuthController::class, 'showMemberLoginForm'])->name('member.login.form');

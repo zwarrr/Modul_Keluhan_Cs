@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('chat_sesis', function (Blueprint $table) {
             $table->id();
             $table->foreignId('member_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('cs_id')->constrained('users')->onDelete('cascade')->nullable();
-            $table->enum('status', ['open', 'onprogress', 'closed'])->default('open');
+            $table->foreignId('cs_id')->nullable()->constrained('users')->onDelete('cascade');            $table->enum('status', ['open', 'onprogress', 'closed'])->default('open');
             $table->string('rating')->nullable();
             $table->string('last_message')->nullable();
             $table->timestamp('last_activity')->nullable();
