@@ -11,7 +11,7 @@ Route::get('/redirect-by-role', function () {
 })->middleware('auth');
 
 // Protected route (contoh dashboard)
-Route::middleware(['auth','role:admin'])->group(function () {
+Route::middleware(['auth:web','role:admin'])->group(function () {
     Route::get('/admin/dashboard', function () {
         return view('admin/index');
     })->name('dashboard');
@@ -23,14 +23,18 @@ Route::middleware(['auth','role:admin'])->group(function () {
     Route::get('/admin/members', [UsersController::class, 'member'])->name('admin.member.index');
 });
 
-Route::middleware(['auth','role:cs'])->group(function () {
+Route::middleware(['auth:web','role:cs'])->group(function () {
     Route::get('/cs/dashboard', function () {
         return view('cs.index');
     })->name('cs.dashboard');
 });
 
-Route::middleware(['auth','role:member'])->group(function () {
+Route::middleware(['auth:member','role:member'])->group(function () {
     Route::get('/dashboard', function () {
         return view('member.index');
     })->name('member.dashboard');
+    
+    Route::get('/room_chat', function () {
+        return view('member.sections.room_chat_section');
+    })->name('member.room_chat');
 });
