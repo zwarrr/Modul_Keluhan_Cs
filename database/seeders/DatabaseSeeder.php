@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             ChatSesiSeeder::class,
             PesanSeeder::class,
+            MemberSeeder::class,
         ]);
     }
 }

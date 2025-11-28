@@ -16,12 +16,16 @@ class RoleCheck
      */
     public function handle(Request $request, Closure $next, string $role): Response
     {
+        // Determine which guard to use based on role
+        $guard = ($role === 'member') ? 'member' : 'web';
+        
         // Check if user is authenticated
-        if (!auth()->check()) {
-            return redirect('/login')->with('error', 'Anda harus login terlebih dahulu.');
+        if (!auth($guard)->check()) {
+            $loginRoute = ($role === 'member') ? '/member/login' : '/login';
+            return redirect($loginRoute)->with('error', 'Anda harus login terlebih dahulu.');
         }
 
-        $user = auth()->user();
+        $user = auth($guard)->user();
 
         // Check if user has the required role
         if ($user->role !== $role) {
