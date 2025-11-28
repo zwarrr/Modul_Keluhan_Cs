@@ -76,14 +76,11 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-<<<<<<< HEAD
         'cs' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-=======
 
->>>>>>> 44fa8a1cba6ca1689b116862730078ae7491455c
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
