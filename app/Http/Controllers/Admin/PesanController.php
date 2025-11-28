@@ -4,17 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\User as Users;
 
-class UsersController extends Controller
+class PesanController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $members = Users::where('role', 'member')->get();
-        return view('admin.users.member.index', compact('members'));
+        //
     }
 
     /**

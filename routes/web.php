@@ -26,4 +26,17 @@ Route::middleware(['guest'])->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login');
 });
 
+
+
+use App\Http\Controllers\Cs\ChatController;
+
+// Route untuk halaman chat CS (list, detail, kirim pesan)
+Route::prefix('cs')->group(function () {
+    Route::get('chat', [ChatController::class, 'index'])->name('cs.chat.index');
+    Route::get('chat/{id}', [ChatController::class, 'detail'])->name('cs.chat.detail');
+    Route::post('chat/{id}/send', [ChatController::class, 'sendMessage'])->name('cs.chat.send');
+    Route::post('chat/{id}/close', [ChatController::class, 'closeSession'])->name('cs.chat.close');
+});
+
+
 Require __DIR__.'/auth.php';

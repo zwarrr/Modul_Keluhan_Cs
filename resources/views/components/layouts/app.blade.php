@@ -27,6 +27,9 @@
     <link rel="stylesheet" href="{{asset('lte/plugins/summernote/summernote-bs4.css')}}">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <!-- DataTables -->
+    <link rel="stylesheet" href="{{asset('lte/plugins/datatables-bs4/css/dataTables.bootstrap4.css')}}">
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -40,6 +43,17 @@
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
+
+
+            <!-- Content Header (Page header) -->
+            @isset($header)
+            <div class="content-header">
+                <div class="container-fluid">
+                    {{ $header }}
+                </div>
+            </div>
+            @endisset
+
             {{ $slot }}
         </div>
 
@@ -70,6 +84,9 @@
     </script>
     <!-- Bootstrap 4 -->
     <script src="{{asset('lte/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+    <!-- DataTables -->
+    <script src="{{asset('lte/plugins/datatables/jquery.dataTables.js')}}"></script>
+    <script src="{{asset('lte/plugins/datatables-bs4/js/dataTables.bootstrap4.js')}}"></script>
     <!-- ChartJS -->
     <script src="{{asset('lte/plugins/chart.js/Chart.min.js')}}"></script>
     <!-- Sparkline -->
@@ -94,6 +111,7 @@
     <script src="{{asset('lte/dist/js/pages/dashboard.js')}}"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="{{asset('lte/dist/js/demo.js')}}"></script>
+
 </body>
 
 </html>

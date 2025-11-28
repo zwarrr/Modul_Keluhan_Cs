@@ -14,6 +14,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+
+// Endpoint API untuk member kirim pesan (buat sesi & pesan sekaligus)
+Route::post('/member/chat/send', [\App\Http\Controllers\Members\ChatController::class, 'sendMessage']);
+
+// Endpoint API untuk get data sesi (detail per sesi, ada member & cs)
+Route::get('/member/chat/sesi/{id}', [\App\Http\Controllers\Members\ChatController::class, 'getSesi']);
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
