@@ -21,10 +21,7 @@ Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->nam
 
 // otomatis redirect 
 Route::get('/', function () {
-    if (auth('member')->check()) {
-        return view('member.sections.room_chat_section');
-    }
-    return redirect('/member/login');
+    return view('welcome');
 });
 
 // route untuk room chat (harus login sebagai member)
