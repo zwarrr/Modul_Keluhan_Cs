@@ -15,6 +15,9 @@ use App\Http\Controllers\ChatController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+// universal
+Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->name('logout');
+
 
 // otomatis redirect 
 Route::get('/', function () {
@@ -28,7 +31,6 @@ Route::middleware(['auth:member', 'role:member'])->group(function () {
     })->name('chatroom');
     
     Route::post('/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
 // rute untuk halaman login admin/cs

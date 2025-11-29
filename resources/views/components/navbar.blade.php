@@ -26,7 +26,39 @@
     </form>
 
     <!-- Right navbar links -->
-    <ul class="navbar-nav ml-auto">
+        <!-- Profile Info -->
+        @php
+            $user = Auth::user();
+            function getInitials($name) {
+                $words = explode(' ', trim($name));
+                $initials = '';
+                foreach ($words as $w) {
+                    if ($w !== '') $initials .= strtoupper(mb_substr($w, 0, 1));
+                }
+                return mb_substr($initials, 0, 2);
+            }
+        @endphp
+        <ul class="navbar-nav align-items-center ml-auto" style="margin-left:auto !important;">
+            <li class="nav-item dropdown">
+                <a class="nav-link d-flex align-items-center" data-toggle="dropdown" href="#" style="gap:8px;">
+                    @if($user && !empty($user->foto_profile))
+                        <img src="{{ asset('storage/'.$user->foto_profile) }}" alt="Profile" class="rounded-circle" style="width:32px;height:32px;object-fit:cover;">
+                    @else
+                        <span class="d-inline-flex justify-content-center align-items-center rounded-circle bg-primary text-white" style="width:32px;height:32px;font-weight:bold;font-size:1rem;">
+                            {{ $user ? getInitials($user->name) : '?' }}
+                        </span>
+                    @endif
+                    <span class="ml-2">{{ $user ? $user->name : 'Guest' }}</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <span class="dropdown-item-text font-weight-bold">{{ $user ? $user->name : '' }}</span>
+                    <span class="dropdown-item-text text-muted small">{{ $user ? $user->email : '' }}</span>
+                    <div class="dropdown-divider"></div>
+                    <a href="{{ route('logout') }}" class="dropdown-item">Logout</a>
+                </div>
+            </li>
+        </ul>
+    {{-- <ul class="navbar-nav ml-auto">
         <!-- Messages Dropdown Menu -->
         <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">
@@ -117,6 +149,6 @@
                 <i class="fas fa-th-large"></i>
             </a>
         </li>
-    </ul>
+    </ul> --}}
 </nav>
 <!-- /.navbar -->
