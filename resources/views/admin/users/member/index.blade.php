@@ -20,7 +20,7 @@
                     <tr>
                         <th style="width: 10px">#</th>
                         <th>Name</th>
-                        <th>Email</th>
+                        <th>ID</th>
                         <th>Created At</th>
                     </tr>
                 </thead>
@@ -29,7 +29,7 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $member->name }}</td>
-                            <td>{{ $member->email }}</td>
+                            <td>{{ $member->member_id }}</td>
                             <td>{{ $member->created_at->format('d M Y') }}</td>
                         </tr>
                     @endforeach
