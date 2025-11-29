@@ -111,10 +111,17 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        auth('member')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        
-        return redirect('/member/login');
+        if (auth('member')->check()) {
+            auth('member')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect('/member/login');
+        } elseif (auth()->check()) {
+            auth()->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect('/login');
+        }
+        return redirect('/login');
     }
 }
