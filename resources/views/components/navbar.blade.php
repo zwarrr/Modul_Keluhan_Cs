@@ -1,6 +1,6 @@
 <!-- Navbar -->
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-    <!-- Left navbar links -->
+    <!-- Left navbar links
     <ul class="navbar-nav">
         <li class="nav-item">
             <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
@@ -13,7 +13,7 @@
         </li>
     </ul>
 
-    <!-- SEARCH FORM -->
+    <!-- SEARCH FORM 
     <form class="form-inline ml-3">
         <div class="input-group input-group-sm">
             <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
@@ -24,11 +24,42 @@
             </div>
         </div>
     </form>
+    -->
 
     <!-- Right navbar links -->
         <!-- Profile Info -->
         @php
-            $user = Auth::user();
+            // Detect active guard based on current route
+            $user = null;
+            
+            if (request()->is('admin*')) {
+                // Route admin - gunakan guard admin saja
+                if (auth('admin')->check()) {
+                    $user = auth('admin')->user();
+                }
+            } elseif (request()->is('cs*')) {
+                // Route cs - gunakan guard cs saja
+                if (auth('cs')->check()) {
+                    $user = auth('cs')->user();
+                }
+            } elseif (request()->is('member*') || request()->is('dashboard') || request()->is('chat*') || request()->is('room_chat')) {
+                // Route member - gunakan guard member saja
+                if (auth('member')->check()) {
+                    $user = auth('member')->user();
+                }
+            }
+            
+            // Fallback: check all guards if route pattern doesn't match
+            if (!$user) {
+                if (auth('admin')->check()) {
+                    $user = auth('admin')->user();
+                } elseif (auth('cs')->check()) {
+                    $user = auth('cs')->user();
+                } elseif (auth('member')->check()) {
+                    $user = auth('member')->user();
+                }
+            }
+            
             function getInitials($name) {
                 $words = explode(' ', trim($name));
                 $initials = '';
@@ -41,12 +72,12 @@
         <ul class="navbar-nav align-items-center ml-auto" style="margin-left:auto !important;">
             <li class="nav-item dropdown">
                 <a class="nav-link d-flex align-items-center" data-toggle="dropdown" href="#" style="gap:8px;">
-                    @if($user && !empty($user->foto_profile))
-                        <img src="{{ asset('storage/'.$user->foto_profile) }}" alt="Profile" class="rounded-circle" style="width:32px;height:32px;object-fit:cover;">
-                    @else
+                   <!-- @if($user && !empty($user->foto_profile))
+                        <img src="{{ asset('storage/'.$user->foto_profile) }}" alt="Profile" class="rounded-circle" style="width:32px;height:32px;object-fit:cover;"> 
+                    @else 
                         <span class="d-inline-flex justify-content-center align-items-center rounded-circle bg-primary text-white" style="width:32px;height:32px;font-weight:bold;font-size:1rem;">
                             {{ $user ? getInitials($user->name) : '?' }}
-                        </span>
+                        </span> -->
                     @endif
                     <span class="ml-2">{{ $user ? $user->name : 'Guest' }}</span>
                 </a>

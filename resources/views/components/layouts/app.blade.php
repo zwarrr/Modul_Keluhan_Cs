@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>AdminLTE 3 | Dashboard</title>
+    <title>Modul Keluhan Chat CS</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Font Awesome -->
@@ -30,6 +30,35 @@
 
     <!-- DataTables -->
     <link rel="stylesheet" href="{{asset('lte/plugins/datatables-bs4/css/dataTables.bootstrap4.css')}}">
+    
+    <!-- Custom CSS for Sidebar Hover & Active -->
+    <style>
+        /* Sidebar nav link hover effect */
+        .nav-sidebar .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        
+        /* Active state for nav links */
+        .nav-sidebar .nav-link.active {
+            background-color: #007bff !important;
+            color: #fff !important;
+        }
+        
+        .nav-sidebar .nav-link.active .nav-icon {
+            color: #fff !important;
+        }
+        
+        /* Ensure hover works on non-active items */
+        .sidebar-dark-primary .nav-sidebar .nav-link:not(.active):hover {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            color: #c2c7d0 !important;
+        }
+        
+        /* Ensure proper spacing for content */
+        .content-wrapper > .content:first-child {
+            padding-top: 1rem;
+        }
+    </style>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -42,8 +71,7 @@
         <x-sidebar/>
 
         <!-- Content Wrapper. Contains page content -->
-        <div class="content-wrapper">
-
+        <div class="content-wrapper" style="min-height: auto !important;">
 
             <!-- Content Header (Page header) -->
             @isset($header)
@@ -58,13 +86,13 @@
         </div>
 
         <!-- /.content-wrapper -->
-        <footer class="main-footer">
+        <!-- <footer class="main-footer">
             <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong>
             All rights reserved.
             <div class="float-right d-none d-sm-inline-block">
                 <b>Version</b> 3.0.0
             </div>
-        </footer>
+        </footer> -->
 
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
@@ -111,6 +139,28 @@
     <script src="{{asset('lte/dist/js/pages/dashboard.js')}}"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="{{asset('lte/dist/js/demo.js')}}"></script>
+    
+    <!-- Pusher & Laravel Echo for WebSocket -->
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.15.0/dist/echo.iife.js"></script>
+    
+    <script>
+        // Initialize Echo for WebSocket real-time communication
+        window.Echo = new Echo({
+            broadcaster: 'pusher',
+            key: '{{ config('broadcasting.connections.pusher.key') }}',
+            cluster: '{{ config('broadcasting.connections.pusher.options.cluster') }}',
+            wsHost: window.location.hostname,
+            wsPort: {{ config('broadcasting.connections.pusher.options.port', 6001) }},
+            wssPort: {{ config('broadcasting.connections.pusher.options.port', 6001) }},
+            forceTLS: false,
+            encrypted: true,
+            disableStats: true,
+            enabledTransports: ['ws', 'wss'],
+        });
+        
+        console.log('Echo initialized for admin/CS');
+    </script>
 
 </body>
 

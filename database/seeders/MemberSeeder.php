@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\User;
+use App\Models\Member;
 use Illuminate\Support\Facades\Hash;
 
 class MemberSeeder extends Seeder
@@ -20,7 +20,7 @@ class MemberSeeder extends Seeder
                 'name' => 'Member Satu',
                 'email' => null,
                 'password' => Hash::make('202020'),
-                'role' => 'member',
+                'address' => 'Jl. Member Satu No. 1',
                 'phone_number' => '081234567890',
             ],
             [
@@ -28,13 +28,21 @@ class MemberSeeder extends Seeder
                 'name' => 'Member Dua',
                 'email' => null,
                 'password' => Hash::make('303030'),
-                'role' => 'member',
+                'address' => 'Jl. Member Dua No. 2',
                 'phone_number' => '081234567891',
+            ],
+            [
+                'member_id' => '404040',
+                'name' => 'Member Test',
+                'email' => null,
+                'password' => Hash::make('404040'),
+                'address' => 'Jl. Testing No. 404',
+                'phone_number' => '081234567892',
             ],
         ];
 
         foreach ($members as $member) {
-            User::create($member);
+            Member::create($member);
         }
     }
 }

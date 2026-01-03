@@ -1,4 +1,10 @@
 @foreach($pesans as $pesan)
+    @if(in_array(($pesan['type'] ?? 'message'), ['session_badge','date_badge']))
+        <div class="text-center my-2">
+            <span class="badge bg-light text-dark border">{{ $pesan['label'] ?? 'Sesi' }}</span>
+        </div>
+        @continue
+    @endif
     <div class="d-flex mb-1 {{ $pesan['role'] === 'cs' ? 'justify-content-end' : 'justify-content-start' }}">
         @if($pesan['role'] === 'member')
             <div class="me-2 align-self-end">
@@ -14,7 +20,7 @@
                 <div class="mt-1">
                     @php
                         $imgExt = ['jpg','jpeg','png','gif','webp','bmp'];
-                        $msg = $pesan['message'];
+                        $msg = $pesan['file_path'];
                         $isImg = false;
                         if (is_string($msg)) {
                             $ext = strtolower(pathinfo($msg, PATHINFO_EXTENSION));
@@ -22,12 +28,10 @@
                         }
                     @endphp
                     @if($isImg)
-                        {{-- <a href="{{ asset('storage/'.$msg) }}" target="_blank">
-                            <img src="{{ asset('storage/'.$msg) }}" alt="gambar" style="max-width:180px;max-height:180px;border-radius:8px;object-fit:cover;">
-                        </a> --}}
-                        <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXjqXNvuBWTf9B77ZZy4PLWlkAzGQMoXgrow&s" target="_blank">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXjqXNvuBWTf9B77ZZy4PLWlkAzGQMoXgrow&s" alt="gambar" style="max-width:180px;max-height:180px;border-radius:8px;object-fit:cover;">
+                        <a href="{{ asset($msg) }}" target="_blank">
+                            <img src="{{ asset($msg) }}" alt="gambar" style="max-width:180px;max-height:180px;border-radius:8px;object-fit:cover;">
                         </a>
+                        
                     @else
                         {{ $pesan['message'] }}
                     @endif

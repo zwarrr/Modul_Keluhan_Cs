@@ -60,7 +60,7 @@
                             id="member_id"
                             class="w-full border border-gray-300 rounded-xl py-3 pl-10 pr-4 text-sm focus:ring-2 outline-none"
                             style="focus:ring-color: #282828;"
-                            placeholder="202020"
+                            placeholder="Type your member ID"
                             value="{{ old('member_id') }}"
                             required
                         >
@@ -77,7 +77,7 @@
                             name="password"
                             class="w-full border border-gray-300 rounded-xl py-3 pl-10 pr-10 text-sm focus:ring-2 outline-none"
                             style="focus:ring-color: #282828;"
-                            placeholder="enter your password"
+                            placeholder="******"
                             required
                         >
                         <i id="togglePassword" class="fa-regular fa-eye absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer"></i>
@@ -194,7 +194,7 @@
         
         // Proceed after successful login
         function proceedAfterLogin() {
-            window.location.href = '{{ route("chatroom") }}';
+            window.location.href = '{{ route("chat.list") }}';
         }
         
         // Close failed modal and try again

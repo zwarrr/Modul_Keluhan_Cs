@@ -1,9 +1,8 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="/" class="brand-link">
-        <img src="https://i.pinimg.com/736x/47/c7/94/47c794ea16e203917795234981edf120.jpg"
-            alt="APP CS Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">APP CS</span>
+        <img src="{{ asset('img/logo_tms.png') }}" alt="avatar" class="brand-image img-circle elevation-3" style="opacity: .8">
+        <span class="brand-text font-weight-light">TMS CHAT</span>
     </a>
 
     <!-- Sidebar -->
@@ -12,7 +11,44 @@
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
                 @php
-                    $user = auth()->user();
+                    // Detect active guard based on current route
+                    $user = null;
+                    $activeGuard = null;
+                    
+                    if (request()->is('admin*')) {
+                        // Route admin - gunakan guard admin
+                        if (auth('admin')->check()) {
+                            $user = auth('admin')->user();
+                            $activeGuard = 'admin';
+                        }
+                    } elseif (request()->is('cs*')) {
+                        // Route cs - gunakan guard cs
+                        if (auth('cs')->check()) {
+                            $user = auth('cs')->user();
+                            $activeGuard = 'cs';
+                        }
+                    } elseif (request()->is('member*') || request()->is('dashboard') || request()->is('chat*') || request()->is('room_chat')) {
+                        // Route member - gunakan guard member
+                        if (auth('member')->check()) {
+                            $user = auth('member')->user();
+                            $activeGuard = 'member';
+                        }
+                    }
+                    
+                    // Fallback: check all guards if route pattern doesn't match
+                    if (!$user) {
+                        if (auth('admin')->check()) {
+                            $user = auth('admin')->user();
+                            $activeGuard = 'admin';
+                        } elseif (auth('cs')->check()) {
+                            $user = auth('cs')->user();
+                            $activeGuard = 'cs';
+                        } elseif (auth('member')->check()) {
+                            $user = auth('member')->user();
+                            $activeGuard = 'member';
+                        }
+                    }
+                    
                     $foto = $user->foto_profile ?? null;
                     $name = $user->name ?? '';
                     $initial = collect(explode(' ', $name))
@@ -47,7 +83,9 @@
                with font-awesome or any other icon font library -->
 
                {{-- untuk admin --}}
-                @if (auth()->user()->role === 'admin')
+                @if ($user && $user->role === 'admin')
+                    <li class="nav-header">MENU ADMIN</li>
+                    
                     <li class="nav-item">
                         <a href="/admin/dashboard"
                             class="nav-link {{ request()->is('admin/dashboard') ? 'active' : '' }}">
@@ -56,94 +94,77 @@
                         </a>
                     </li>
 
-                    <li class="nav-header">MANAGEMENT USER</li>
-
                     <li class="nav-item">
-                        <a href="/admin/members" class="nav-link {{ request()->is('admin/members') ? 'active' : '' }}">
+                        <a href="/admin/dataakuns" class="nav-link {{ request()->is('admin/dataakuns*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-users"></i>
-                            <p>Data Member</p>
+                            <p>Data Akun</p>
                         </a>
                     </li>
-
-                    <li class="nav-item">
-                        <a href="/admin/costumer-services" class="nav-link {{ request()->is('admin/costumer-services') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-headset"></i>
-                            <p>Data Customer Service</p>
-                        </a>
-                    </li>
-
-                    <li class="nav-header">CHAT & KOMPLAIN</li>
 
                     <li class="nav-item">
                         <a href="/admin/sesi-chat"
-                            class="nav-link {{ request()->is('admin/sesi-chat/*') ? 'active' : '' }}">
+                            class="nav-link {{ request()->is('admin/sesi-chat*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-comments"></i>
                             <p>Semua Sesi Chat</p>
                         </a>
                     </li>
 
-                    {{-- <li class="nav-item">
-                        <a href="/admin/chat-monitor"
-                            class="nav-link {{ request()->is('admin/chat-monitor') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-eye"></i>
-                            <p>Monitoring Chat Berjalan</p>
-                        </a>
-                    </li> --}}
-
-                    <li class="nav-header">LAPORAN</li>
-
                     <li class="nav-item">
-                        <a href="/admin/report" class="nav-link {{ request()->is('admin/report') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-file-alt"></i>
-                            <p>Rekap Laporan</p>
+                        <a href="/admin/rating"
+                            class="nav-link {{ request()->is('admin/rating*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-star"></i>
+                            <p>Data Rating</p>
                         </a>
                     </li>
 
-                    <li class="nav-header">PENGATURAN</li>
-
+                    <li class="nav-header">MENU CS</li>
+                    
                     <li class="nav-item">
-                        <a href="/admin/settings"
-                            class="nav-link {{ request()->is('admin/settings') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-cog"></i>
-                            <p>Pengaturan Sistem</p>
+                        <a href="/admin/cs/chat" class="nav-link {{ request()->is('admin/cs/chat*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-comments"></i>
+                            <p>Semua Chat</p>
                         </a>
                     </li>
                 @endif
 
                 {{-- untuk cs --}}
-                @if (auth()->user()->role === 'cs')
+                @if ($user && $user->role === 'cs')
+                    <li class="nav-header">MENU CS</li>
+                    
                     <li class="nav-item">
-                        <a href="/cs/dashboard" class="nav-link {{ request()->is('cs/dashboard') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-tachometer-alt"></i>
-                            <p>Dashboard CS</p>
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a href="/cs/chat" class="nav-link {{ request()->is('cs/chat') ? 'active' : '' }}">
+                        <a href="/cs/chat" class="nav-link {{ request()->is('cs/chat') && !request()->has('filter') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-comments"></i>
-                            <p>Chat Aktif</p>
+                            <p>Semua Chat</p>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a href="/cs/chat-riwayat"
-                            class="nav-link {{ request()->is('cs/chat-riwayat') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-history"></i>
-                            <p>Riwayat Chat</p>
+                        <a href="/cs/chat?filter=my-chats"
+                            class="nav-link {{ request()->is('cs/chat') && request()->get('filter') === 'my-chats' ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-user-circle"></i>
+                            <p>Chat Saya</p>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a href="/cs/rating" class="nav-link {{ request()->is('cs/rating') ? 'active' : '' }}">
+                        <a href="/cs/profile"
+                            class="nav-link {{ request()->is('cs/profile') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-user"></i>
+                            <p>Profil</p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="/cs/rating"
+                            class="nav-link {{ request()->is('cs/rating*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-star"></i>
-                            <p>Rating & Evaluasi</p>
+                            <p>Ratting Saya</p>
                         </a>
                     </li>
                 @endif
 
                 {{-- untuk member --}}
-                @if (auth()->user()->role === 'member')
+                @if ($user && (!isset($user->role) || $user->role === 'member'))
                     <li class="nav-item">
                         <a href="/dashboard"
                             class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}">
