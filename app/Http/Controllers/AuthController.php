@@ -8,25 +8,15 @@ class AuthController extends Controller
 {
     public function showLoginForm()
     {
-        // Cek jika sudah login, redirect sesuai role
-        if (auth()->check()) {
-            if (auth()->user()->role === 'admin') {
-                return redirect('admin/dashboard');
-            } elseif (auth()->user()->role === 'cs') {
-                return redirect('cs/dashboard');
-            } else {
-                return redirect('/dashboard');
-            }
-        }
-        
+        // Tampilkan form login untuk CS dan Admin
         return view('auth.login');
     }
 
     public function showMemberLoginForm()
     {
-        // Cek jika sudah login sebagai member, redirect ke chatroom
+        // Cek jika sudah login sebagai member, redirect ke chat list
         if (auth('member')->check()) {
-            return redirect('/member/chatroom');
+            return redirect('/member/chat');
         }
         
         return view('auth.login_member');
@@ -40,13 +30,12 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
         
-        // Cari user berdasarkan member_id dan role member
-        $user = \App\Models\User::where('member_id', $request->member_id)
-                                ->where('role', 'member')
+        // Cari member berdasarkan member_id
+        $member = \App\Models\Member::where('member_id', $request->member_id)
                                 ->first();
         
-        if ($user && \Hash::check($request->password, $user->password)) {
-            auth('member')->login($user, $request->filled('remember'));
+        if ($member && \Hash::check($request->password, $member->password)) {
+            auth('member')->login($member, $request->filled('remember'));
             
             // Return JSON response for AJAX request
             if ($request->expectsJson() || $request->ajax()) {
@@ -54,15 +43,15 @@ class AuthController extends Controller
                     'success' => true,
                     'message' => [
                         'title' => 'Login Berhasil!',
-                        'subtitle' => 'Selamat datang kembali, ' . $user->member_id,
+                        'subtitle' => 'Selamat datang kembali, ' . $member->member_id,
                         'text' => ''
                     ],
-                    'redirect' => route('chatroom')
+                    'redirect' => route('chat.list')
                 ]);
             }
             
-            // Redirect ke chatroom setelah login sukses (fallback)
-            return redirect()->intended('/member/chatroom');
+            // Redirect ke chat list setelah login sukses (fallback)
+            return redirect()->intended('/member/chat');
         }
 
         // Return JSON response for failed login
@@ -86,22 +75,25 @@ class AuthController extends Controller
             'password' => 'required|string|min:6',
         ]);
         
-        $credentials = $request->only('email', 'password');
-
-        if (auth()->attempt($credentials)) {
-            // redirect untuk 3 role
-            if (auth()->user()->role === 'admin') {
-                return redirect()->intended('admin/dashboard');
-            } elseif (auth()->user()->role === 'cs') {
-                return redirect()->intended('cs/dashboard');
-            } else {
-                return redirect()->intended('/dashboard');
+        // Cari user berdasarkan email
+        $user = \App\Models\User::where('email', $request->email)->first();
+        
+        if ($user && \Hash::check($request->password, $user->password)) {
+            $request->session()->forget('url.intended');
+            
+            // Login dengan guard sesuai role
+            if ($user->role === 'admin') {
+                auth('admin')->login($user, $request->filled('remember'));
+                return redirect('admin/dashboard');
+            } elseif ($user->role === 'cs') {
+                auth('cs')->login($user, $request->filled('remember'));
+                return redirect()->route('cs.chat.index');
             }
         }
 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ]);
+            'email' => 'Email atau password salah.',
+        ])->withInput($request->only('email'));
     }
 
     public function showRegisterForm()
@@ -111,17 +103,43 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        // Logout CS atau Admin dengan cara manual menghapus session guard spesifik
+        // Jangan gunakan auth()->logout() karena akan mempengaruhi guard lain
+        
+        if (auth('cs')->check()) {
+            // Hapus session authentication untuk guard CS saja
+            $sessionKey = 'login_cs_' . sha1('App\Models\User');
+            $request->session()->forget($sessionKey);
+            $request->session()->forget('password_hash_cs');
+            
+            // Regenerate token untuk keamanan
+            $request->session()->regenerateToken();
+            
+            return redirect('/login')->with('success', 'CS berhasil logout.');
+            
+        } elseif (auth('admin')->check()) {
+            // Hapus session authentication untuk guard Admin saja
+            $sessionKey = 'login_admin_' . sha1('App\Models\User');
+            $request->session()->forget($sessionKey);
+            $request->session()->forget('password_hash_admin');
+            
+            // Regenerate token untuk keamanan
+            $request->session()->regenerateToken();
+            
+            return redirect('/login')->with('success', 'Admin berhasil logout.');
+        }
+        
+        return redirect('/login');
+    }
+
+    public function memberLogout(Request $request)
+    {
+        // Logout khusus untuk Member (guard member)
         if (auth('member')->check()) {
             auth('member')->logout();
-            $request->session()->invalidate();
             $request->session()->regenerateToken();
-            return redirect('/member/login');
-        } elseif (auth()->check()) {
-            auth()->logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-            return redirect('/login');
         }
-        return redirect('/login');
+        
+        return redirect('/member/login')->with('success', 'Anda berhasil logout.');
     }
 }

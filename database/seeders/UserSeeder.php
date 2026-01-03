@@ -17,7 +17,6 @@ class UserSeeder extends Seeder
             'email' => 'admin@test.com',
             'password' => bcrypt('password'),
             'role' => 'admin',
-            'address' => 'Jl. Admin',
             'phone_number' => '0811111111',
         ]);
 
@@ -25,18 +24,14 @@ class UserSeeder extends Seeder
             'name' => 'CS Test',
             'email' => 'cs@test.com',
             'password' => bcrypt('password'),
-            'role' => 'cs',
-            'address' => 'Jl. CS',
-            'phone_number' => '0822222222',
+            'role' => 'cs'
         ]);
 
         \App\Models\User::create([
-            'name' => 'Member Test',
-            'email' => 'member@test.com',
-            'password' => bcrypt('password'),
-            'role' => 'member',
-            'address' => 'Jl. Member',
-            'phone_number' => '0833333333',
+            'name' => 'Zwar',
+            'email' => 'zwarcs@cs.com',
+            'password' => bcrypt('zwarcs123'),
+            'role' => 'cs'
         ]);
     }
 }

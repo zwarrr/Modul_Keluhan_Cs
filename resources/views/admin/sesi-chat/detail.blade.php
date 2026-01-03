@@ -100,34 +100,10 @@
                             </div>
                         </div>
                         
-                        <!-- Input Pesan -->
-                        <div class="card-footer">
-                            <form action="#" method="post">
-                                <div class="input-group">
-                                    <input type="text" name="message" placeholder="Ketik Pesan ..." class="form-control">
-                                    <span class="input-group-append">
-                                        <button type="submit" class="btn btn-primary">Kirim</button>
-                                    </span>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    
-                    <!-- Action Buttons -->
-                    <div class="row mt-3">
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-body text-center">
-                                    <button type="button" class="btn btn-success mr-2">
-                                        <i class="fas fa-check mr-1"></i> Tandai Selesai
-                                    </button>
-                                    <button type="button" class="btn btn-warning mr-2">
-                                        <i class="fas fa-sync-alt mr-1"></i> Refresh
-                                    </button>
-                                    <button type="button" class="btn btn-danger">
-                                        <i class="fas fa-times mr-1"></i> Tutup Sesi
-                                    </button>
-                                </div>
+                        <!-- Admin View Only - No Input -->
+                        <div class="card-footer bg-light">
+                            <div class="alert alert-info mb-0" role="alert">
+                                <i class="fas fa-info-circle"></i> <strong>View Only Mode:</strong> Admin hanya dapat melihat percakapan, tidak dapat mengirim pesan atau menutup sesi.
                             </div>
                         </div>
                     </div>

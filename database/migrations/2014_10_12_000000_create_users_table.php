@@ -8,19 +8,18 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     * Tabel users hanya untuk Admin dan CS
      */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('member_id')->nullable()->unique();
             $table->string('name');
             $table->string('email')->nullable()->unique();
-            $table->enum('role', ['admin', 'cs', 'member']);
+            $table->enum('role', ['admin', 'cs']); // Hanya admin dan CS
             $table->timestamp('email_verified_at')->nullable();
             $table->string('foto_profile')->nullable();
             $table->string('password');
-            $table->string('address')->nullable();
             $table->string('phone_number')->nullable();
             $table->rememberToken();
             $table->timestamps();

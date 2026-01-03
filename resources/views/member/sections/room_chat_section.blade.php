@@ -132,64 +132,7 @@
   }
   footer button#sendBtn:hover { background-color: #1a1a1a; }
 
-  /* Camera Modal */
-  .camera-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.95);
-    z-index: 1000;
-    flex-direction: column;
-  }
-  .camera-modal.active { display: flex; }
-  .camera-modal video {
-    width: 100%;
-    height: calc(100% - 120px);
-    object-fit: cover;
-    background: #000;
-  }
-  .camera-modal video.mirror {
-    transform: scaleX(-1);
-  }
-  .camera-modal .camera-controls {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 20px;
-    background: #1f1f1f;
-  }
-  .camera-modal .camera-controls button {
-    background: white;
-    border: none;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 24px;
-    color: #333;
-    transition: transform 0.2s;
-  }
-  .camera-modal .camera-controls button:hover { transform: scale(1.1); }
-  .camera-modal .camera-controls button.capture {
-    width: 70px;
-    height: 70px;
-    background: #25d366;
-    color: white;
-  }
-  .camera-modal .camera-controls button.close {
-    background: #f44336;
-    color: white;
-  }
-  .camera-modal .camera-controls button.switch {
-    background: #2196F3;
-    color: white;
-  }
+
 
   /* Dropdown menu for ellipsis */
   .menu-dropdown {
@@ -217,49 +160,195 @@
   .menu-dropdown div i { color: #666; font-size: 16px; }
   .menu-dropdown div:first-child { border-radius: 4px 4px 0 0; }
   .menu-dropdown div:last-child { border-radius: 0 0 4px 4px; }
+
+  /* File Preview */
+  #filePreview {
+    display: none;
+    position: fixed;
+    bottom: 60px;
+    left: 16px;
+    right: 16px;
+    background: white;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    z-index: 100;
+  }
+  #filePreview.show { display: block; }
+  #filePreview .preview-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  #filePreview img {
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 4px;
+    object-fit: cover;
+  }
+  #filePreview .file-icon {
+    width: 60px;
+    height: 60px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    color: #666;
+  }
+  #filePreview .file-info {
+    flex: 1;
+    min-width: 0;
+  }
+  #filePreview .file-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #303030;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #filePreview .file-size {
+    font-size: 12px;
+    color: #666;
+    margin-top: 2px;
+  }
+  #filePreview .remove-file {
+    cursor: pointer;
+    color: #f44336;
+    font-size: 20px;
+    padding: 8px;
+  }
+  #filePreview .remove-file:hover {
+    color: #d32f2f;
+  }
+
+  /* Message with file */
+  .bubble img.message-image {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-top: 4px;
+    cursor: pointer;
+  }
+  .bubble .file-attachment {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    background: rgba(0,0,0,0.05);
+    border-radius: 8px;
+    margin-top: 4px;
+  }
+  .bubble .file-attachment .file-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(0,0,0,0.1);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+  .bubble .file-attachment .file-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .bubble .file-attachment .file-name {
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .bubble .file-attachment .file-size {
+    font-size: 11px;
+    opacity: 0.7;
+    margin-top: 2px;
+  }
+  .bubble .file-attachment a {
+    color: inherit;
+    text-decoration: none;
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <!-- Back button
-  <i class="fa-solid fa-arrow-left cursor-pointer"></i>
-  -->
-  <img class="avatar" src="https://i.pinimg.com/736x/67/e5/34/67e5342afddcacf45fcc102c2a12c11d.jpg" alt="avatar"/>
+  @if(!request()->boolean('embed'))
+    <i class="fa-solid fa-arrow-left cursor-pointer" onclick="window.location.href='{{ route('chat.list') }}'"></i>
+  @endif
+  <img class="avatar" src="{{ asset('img/logo_tms.png') }}" alt="avatar"/>
   <div class="user-info">
     <div class="name">Customer Service</div>
     <div class="status">online</div>
   </div>
-  <!-- Icon
-  <i class="fa-solid fa-phone cursor-pointer"></i>
-  <i class="fa-solid fa-video cursor-pointer"></i>
-  -->
+  <!-- <i class="fa-solid fa-phone cursor-pointer"></i>
+  <i class="fa-solid fa-video cursor-pointer"></i> -->
   <i class="fa-solid fa-ellipsis-vertical cursor-pointer" id="ellipsisBtn"></i>
 </header>
 
 <!-- Dropdown menu -->
 <div id="menuDropdown" class="menu-dropdown">
+  <!-- Clear Chat feature disabled
   <div id="clearChatBtn">
     <i class="fa-solid fa-trash-can" style="margin-right: 12px; width: 16px;"></i>
     <span>Clear Chat</span>
   </div>
+  -->
+  <div id="endSessionBtn">
+    <i class="fa-solid fa-circle-xmark" style="margin-right: 12px; width: 16px;"></i>
+    <span>Akhiri sesi chat</span>
+  </div>
+  <!-- Logout feature disabled
   <div id="logoutBtn">
     <i class="fa-solid fa-right-from-bracket" style="margin-right: 12px; width: 16px;"></i>
     <span>Logout</span>
-  </div>
+  </div> -->
 </div>
 
 <!-- Logout Form (Hidden) -->
-<form id="logoutForm" action="{{ route('logout') }}" method="POST" style="display: none;">
+<form id="logoutForm" action="{{ route('member.logout') }}" method="POST" style="display: none;">
   @csrf
 </form>
 
 <!-- Include Modals -->
-@include('member.sections.modal_information.logout_modal')
-@include('member.sections.modal_information.clear_chat_modal')
+<!-- Clear Chat modal disabled -->
+{{-- @include('member.sections.modal_information.clear_chat_modal') --}}
+
 @include('member.sections.modal_information.loading_modal')
 
+<!-- End Session Confirmation Modal: include in non-embed mode (mobile/standalone) -->
+@if(!request()->boolean('embed'))
+  @include('member.sections.modal_information.end_session_confirm_modal')
+@endif
+
+<!-- Rating modal: always include in non-embed mode (mobile/standalone) -->
+@if(!request()->boolean('embed'))
+  @include('member.sections.modal_information.ratting_pelayanan')
+  <script>
+    // Debug: Verify modal is loaded in mobile
+    console.log('[Rating Modal] Included in page, checking function...');
+    setTimeout(() => {
+      console.log('[Rating Modal] showRatingPelayananModal available:', typeof window.showRatingPelayananModal);
+      console.log('[Rating Modal] Modal element:', document.getElementById('ratingPelayananModal'));
+    }, 100);
+  </script>
+@endif
+
 <main id="chatBody"></main>
+
+<!-- File Preview -->
+<div id="filePreview">
+  <div class="preview-content">
+    <div id="previewContainer"></div>
+    <div class="file-info">
+      <div class="file-name" id="fileName"></div>
+      <div class="file-size" id="fileSize"></div>
+    </div>
+    <i class="fa-solid fa-times remove-file" id="removeFileBtn"></i>
+  </div>
+</div>
 
 <footer>
   <i id="emojiBtn" class="fa-regular fa-face-smile cursor-pointer"></i>
@@ -267,7 +356,7 @@
 
   <label title="Attach File">
     <i class="fa-solid fa-paperclip"></i>
-    <input type="file" id="fileInput" hidden />
+    <input type="file" id="fileInput" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.zip,.rar" hidden />
   </label>
 
   <i class="fa-solid fa-camera cursor-pointer" id="cameraBtn" title="Open Camera"></i>
@@ -277,24 +366,14 @@
   </button>
 </footer>
 
-<!-- Camera Modal -->
-<div id="cameraModal" class="camera-modal">
-  <video id="cameraVideo" autoplay playsinline></video>
-  <div class="camera-controls">
-    <button id="closeCameraBtn" class="close" title="Close Camera">
-      <i class="fa-solid fa-times"></i>
-    </button>
-    <button id="captureBtn" class="capture" title="Capture Photo">
-      <i class="fa-solid fa-camera"></i>
-    </button>
-    <button id="switchCameraBtn" class="switch" title="Switch Camera">
-      <i class="fa-solid fa-rotate"></i>
-    </button>
-  </div>
-  <canvas id="cameraCanvas" style="display:none;"></canvas>
-</div>
+@include('member.sections.camera_section')
 
 <script>
+// ============================================
+// GLOBAL VARIABLES AND CONSTANTS
+// ============================================
+
+// DOM Elements
 const chatBody = document.getElementById("chatBody");
 const input = document.getElementById("messageInput");
 const sendBtn = document.getElementById("sendBtn");
@@ -303,450 +382,255 @@ const fileInput = document.getElementById("fileInput");
 const cameraBtn = document.getElementById("cameraBtn");
 const ellipsisBtn = document.getElementById("ellipsisBtn");
 const menuDropdown = document.getElementById("menuDropdown");
+const filePreview = document.getElementById("filePreview");
+const removeFileBtn = document.getElementById("removeFileBtn");
 
-// Camera elements
-const cameraModal = document.getElementById("cameraModal");
-const cameraVideo = document.getElementById("cameraVideo");
-const cameraCanvas = document.getElementById("cameraCanvas");
-const captureBtn = document.getElementById("captureBtn");
-const closeCameraBtn = document.getElementById("closeCameraBtn");
-const switchCameraBtn = document.getElementById("switchCameraBtn");
+// State variables
+let selectedFile = null;
+let fileCounter = 1;
+let sessionClosed = false;
+let currentSessionHasCS = false; // Track if current session is handled by CS
 
-let currentStream = null;
-let facingMode = "user"; // "user" untuk depan, "environment" untuk belakang
+// Member info for comparison with WebSocket events
+const memberIdValue = "{{ auth('member')->user()->member_id ?? '' }}";
+const currentMemberId = {{ auth('member')->user()->id ?? 'null' }};
 
+// CSRF Token
+const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
-// Emoji picker
-const emojiPicker = document.createElement("div");
-emojiPicker.style = "display:none; position:fixed; bottom:60px; left:16px; right:16px; background:#fff; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); padding:10px; max-height:150px; overflow-y:auto; z-index:100;";
-const emojis = ["😀","😁","😂","😎","😍","😡","😢","👍","🙏","🔥","❤️","🎉"];
-emojis.forEach(e => {
-  const span = document.createElement("span");
-  span.textContent = e;
-  span.style.cssText = "font-size:20px; cursor:pointer; margin:4px;";
-  span.addEventListener("click", () => {
-    input.value += e;
-    autoResize();
-    input.focus();
+// Routes (from Laravel)
+const chatSendRoute = '{{ route("chat.send") }}';
+const chatMessagesRoute = '{{ route("chat.messages") }}';
+const chatTypingRoute = '{{ route("chat.typing") }}';
+const chatNewSessionRoute = '{{ route("chat.newSession") }}';
+const chatEndSessionRoute = '{{ route("chat.endSession") }}';
+
+// If embedded in desktop split view: disable browser context menu and forward to parent
+if ({{ request()->boolean('embed') ? 'true' : 'false' }}) {
+  // Listen for messages from parent to execute end session
+  window.addEventListener('message', (event) => {
+    if (event.origin !== window.location.origin) return;
+    const data = event.data || {};
+    
+    if (data.type === 'chat:executeEndSession') {
+      if (typeof window.actuallyEndSession === 'function') {
+        window.actuallyEndSession();
+      }
+    }
   });
-  emojiPicker.appendChild(span);
-});
-document.body.appendChild(emojiPicker);
 
-emojiBtn.addEventListener("click", () => {
-  emojiPicker.style.display = emojiPicker.style.display === "none" ? "block" : "none";
-});
+  const notifyParentShowCloseMenu = (e) => {
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage(
+          {
+            type: 'chat:showCloseMenuFromIframe',
+            x: e.clientX,
+            y: e.clientY
+          },
+          window.location.origin
+        );
+      }
+    } catch (_) {
+      // ignore
+    }
+  };
 
-// Auto resize
-function autoResize() {
-  input.style.height = "auto";
-  input.style.height = input.scrollHeight + "px";
+  document.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    notifyParentShowCloseMenu(e);
+  });
+
+  document.addEventListener('dblclick', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    notifyParentShowCloseMenu(e);
+  });
+
+  const notifyParentHideMenu = () => {
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'chat:hideMenuFromIframe' }, window.location.origin);
+      }
+    } catch (_) {
+      // ignore
+    }
+  };
+
+  // Normal interactions should not keep/show the menu
+  document.addEventListener('click', () => notifyParentHideMenu(), true);
+  document.addEventListener('scroll', () => notifyParentHideMenu(), true);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') notifyParentHideMenu();
+  });
 }
-input.addEventListener("input", autoResize);
 
-// Scroll to bottom
-function scrollBottom() { setTimeout(() => { chatBody.scrollTop = chatBody.scrollHeight; }, 100); }
+// Function to check if current session has CS handler
+window.checkSessionHasCS = async function() {
+  try {
+    const response = await fetch(chatMessagesRoute + '?sessions_offset=0&sessions_limit=1');
+    const data = await response.json();
+    
+    if (data.success && data.active_session_id) {
+      // Fetch session details to check cs_id
+      const sessionResponse = await fetch(`{{ url('/api/member/session') }}/${data.active_session_id}`, {
+        headers: {
+          'Accept': 'application/json',
+          'X-CSRF-TOKEN': csrfToken
+        }
+      });
+      const sessionData = await sessionResponse.json();
+      
+      currentSessionHasCS = sessionData.cs_id !== null && sessionData.cs_id !== undefined;
+    } else {
+      currentSessionHasCS = false;
+    }
+    
+    // Update button state
+    const endSessionBtn = document.getElementById('endSessionBtn');
+    if (endSessionBtn) {
+      if (currentSessionHasCS) {
+        endSessionBtn.style.opacity = '1';
+        endSessionBtn.style.cursor = 'pointer';
+        endSessionBtn.style.pointerEvents = 'auto';
+      } else {
+        endSessionBtn.style.opacity = '0.5';
+        endSessionBtn.style.cursor = 'not-allowed';
+        endSessionBtn.style.pointerEvents = 'none';
+      }
+    }
+  } catch (err) {
+    console.error('Error checking session CS:', err);
+  }
+};
 
-// Time
-function getTime() {
-  const d = new Date();
-  return d.getHours().toString().padStart(2,"0") + ":" + d.getMinutes().toString().padStart(2,"0");
-}
-
-// Get date string for grouping
-function getDateString(date) {
-  return date.getFullYear() + '-' + 
-         (date.getMonth() + 1).toString().padStart(2, '0') + '-' + 
-         date.getDate().toString().padStart(2, '0');
-}
-
-// Format date badge
-function formatDateBadge(date) {
-  const today = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-  
-  const dateStr = getDateString(date);
-  const todayStr = getDateString(today);
-  const yesterdayStr = getDateString(yesterday);
-  
-  if (dateStr === todayStr) {
-    return 'Today';
-  } else if (dateStr === yesterdayStr) {
-    return 'Yesterday';
+// Function to actually end session (called after confirmation)
+window.actuallyEndSession = function() {
+  // Hide modal - check if function exists (mobile mode) or tell parent (desktop mode)
+  if (typeof window.hideEndSessionConfirmModal === 'function') {
+    window.hideEndSessionConfirmModal();
   } else {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear();
+    // Desktop mode - tell parent to hide modal
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'chat:hideEndSessionModal' }, window.location.origin);
+      }
+    } catch (e) {}
   }
-}
-
-// Track last date badge shown
-let lastDateBadge = null;
-
-// Create date badge if needed
-function addDateBadgeIfNeeded() {
-  const now = new Date();
-  const currentDateStr = getDateString(now);
   
-  if (lastDateBadge !== currentDateStr) {
-    const dateBadge = document.createElement('div');
-    dateBadge.className = 'date-badge';
-    dateBadge.setAttribute('data-date', currentDateStr);
-    
-    const span = document.createElement('span');
-    span.textContent = formatDateBadge(now);
-    
-    dateBadge.appendChild(span);
-    chatBody.appendChild(dateBadge);
-    
-    lastDateBadge = currentDateStr;
-  }
-}
-
-// Create message bubble
-function createBubble(text, self = true) {
-  // Add date badge if needed
-  addDateBadgeIfNeeded();
-  
-  // Clean up text: remove extra spaces and normalize line breaks
-  let cleanText = text
-    .replace(/\n{3,}/g, '\n\n')  // Max 2 line breaks
-    .replace(/ {2,}/g, ' ')       // Replace multiple spaces with single space
-    .trim();
-  
-  const wrapper = document.createElement("div");
-  wrapper.className = "message-wrapper " + (self ? "self" : "other");
-
-  const container = document.createElement("div");
-  const bubble = document.createElement("div");
-  bubble.className = "bubble " + (self ? "self" : "other");
-  bubble.textContent = cleanText;
-
-  const timestamp = document.createElement("div");
-  timestamp.className = "timestamp " + (self ? "self" : "");
-  timestamp.textContent = getTime();
-  if (self) {
-    const icon = document.createElement("i");
-    icon.className = "fa-solid fa-check-double";
-    icon.style.marginLeft = "4px"; icon.style.color = "#4fc3f7";
-    timestamp.appendChild(icon);
-  }
-
-  container.appendChild(bubble);
-  container.appendChild(timestamp);
-  wrapper.appendChild(container);
-  chatBody.appendChild(wrapper);
-  scrollBottom();
-}
-
-// Send message
-function sendMessage() {
-  const text = input.value.trim();
-  if(!text) return;
-  
-  // Tampilkan pesan user
-  createBubble(text, true);
-  input.value = "";
-  autoResize();
-  
-  // Tampilkan typing indicator
-  showTypingIndicator();
-  
-  // Kirim ke API
-  fetch('{{ route("chat.send") }}', {
+  fetch(chatEndSessionRoute, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-    },
-    body: JSON.stringify({ message: text })
-  })
-  .then(response => response.json())
-  .then(data => {
-    removeTypingIndicator();
-    if (data.success) {
-      createBubble(data.message, false);
-    } else {
-      createBubble('Maaf, terjadi kesalahan. Silakan coba lagi.', false);
+      'X-CSRF-TOKEN': csrfToken,
+      'Content-Type': 'application/json'
     }
   })
-  .catch(error => {
-    console.error('Error:', error);
-    removeTypingIndicator();
-    createBubble('Maaf, sistem sedang mengalami gangguan.', false);
-  });
-}
+  .then(async (response) => {
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || data.success === false) {
+      throw new Error(data.message || 'Gagal mengakhiri sesi');
+    }
 
-// Typing indicator functions
-function showTypingIndicator() {
-  const wrapper = document.createElement("div");
-  wrapper.className = "message-wrapper other typing-indicator-wrapper";
-  wrapper.id = "typingIndicator";
-  
-  const container = document.createElement("div");
-  const bubble = document.createElement("div");
-  bubble.className = "bubble other";
-  bubble.innerHTML = '<div style="display:flex;gap:4px;align-items:center;"><span style="width:8px;height:8px;background:#999;border-radius:50%;animation:bounce 1.4s infinite ease-in-out both;"></span><span style="width:8px;height:8px;background:#999;border-radius:50%;animation:bounce 1.4s infinite ease-in-out both;animation-delay:0.16s;"></span><span style="width:8px;height:8px;background:#999;border-radius:50%;animation:bounce 1.4s infinite ease-in-out both;animation-delay:0.32s;"></span></div>';
-  
-  const style = document.createElement('style');
-  style.textContent = '@keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }';
-  document.head.appendChild(style);
-  
-  container.appendChild(bubble);
-  wrapper.appendChild(container);
-  chatBody.appendChild(wrapper);
-  scrollBottom();
-}
+    // Refresh merged timeline so session badge appears immediately
+    if (typeof window.reloadChatHistory === 'function') {
+      window.reloadChatHistory();
+    }
 
-function removeTypingIndicator() {
-  const indicator = document.getElementById("typingIndicator");
-  if (indicator) {
-    indicator.remove();
-  }
-}
+    // Show rating modal after member closes session
+    if (data.sesi_id && typeof window.showRatingPelayananModal === 'function') {
+      console.log('[End Session] Showing rating modal for session:', data.sesi_id);
+      setTimeout(() => {
+        window.showRatingPelayananModal(data.sesi_id);
+      }, 500);
+    }
 
-sendBtn.addEventListener("click", sendMessage);
-input.addEventListener("keydown", e => { if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); sendMessage(); } });
-
-// File upload
-fileInput.addEventListener("change", e => { const file = e.target.files[0]; if(!file) return; sendImage(URL.createObjectURL(file), true); });
-
-// Camera functions
-async function startCamera() {
-  try {
-    if (currentStream) {
-      currentStream.getTracks().forEach(track => track.stop());
+    // If embedded in split view, refresh sessions list
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'chat:refreshSessions' }, window.location.origin);
+      }
+    } catch (_) {
+      // ignore
     }
     
-    const constraints = {
-      video: {
-        facingMode: facingMode,
-        width: { ideal: 1280 },
-        height: { ideal: 720 }
-      },
-      audio: false
-    };
-    
-    currentStream = await navigator.mediaDevices.getUserMedia(constraints);
-    cameraVideo.srcObject = currentStream;
-    
-    // Tambahkan efek mirror untuk kamera depan (selfie)
-    if (facingMode === "user") {
-      cameraVideo.classList.add("mirror");
+    // Reset session CS check
+    currentSessionHasCS = false;
+    window.checkSessionHasCS();
+  })
+  .catch((err) => {
+    console.error(err);
+    alert(err.message || 'Gagal mengakhiri sesi chat. Silakan coba lagi.');
+  });
+};
+
+// End session button - show confirmation modal first
+const endSessionBtn = document.getElementById('endSessionBtn');
+if (endSessionBtn) {
+  endSessionBtn.addEventListener('click', () => {
+    // Close dropdown
+    if (menuDropdown) {
+      menuDropdown.classList.remove('show');
+    }
+
+    // Check if session has CS before allowing end
+    if (!currentSessionHasCS) {
+      alert('Sesi belum ditangani oleh Customer Service. Anda tidak dapat mengakhiri sesi ini.');
+      return;
+    }
+
+    // Show confirmation modal
+    // If in desktop embed mode, tell parent to show modal
+    const isEmbedMode = {{ request()->boolean('embed') ? 'true' : 'false' }};
+    if (isEmbedMode && window.parent && window.parent !== window) {
+      try {
+        window.parent.postMessage({ type: 'chat:showEndSessionModal' }, window.location.origin);
+      } catch (e) {}
     } else {
-      cameraVideo.classList.remove("mirror");
+      // Mobile/standalone mode
+      if (typeof window.showEndSessionConfirmModal === 'function') {
+        window.showEndSessionConfirmModal();
+      }
     }
-    
-    cameraModal.classList.add("active");
-  } catch (error) {
-    alert("Tidak dapat mengakses kamera. Pastikan izin kamera telah diberikan.");
-    console.error("Camera error:", error);
-  }
-}
-
-function stopCamera() {
-  if (currentStream) {
-    currentStream.getTracks().forEach(track => track.stop());
-    currentStream = null;
-  }
-  cameraModal.classList.remove("active");
-}
-
-function capturePhoto() {
-  const context = cameraCanvas.getContext("2d");
-  cameraCanvas.width = cameraVideo.videoWidth;
-  cameraCanvas.height = cameraVideo.videoHeight;
-  
-  // Jika kamera depan, flip gambar agar sesuai dengan preview mirror
-  if (facingMode === "user") {
-    context.translate(cameraCanvas.width, 0);
-    context.scale(-1, 1);
-  }
-  
-  context.drawImage(cameraVideo, 0, 0);
-  
-  cameraCanvas.toBlob(blob => {
-    const url = URL.createObjectURL(blob);
-    sendImage(url, true);
-    stopCamera();
-  }, "image/jpeg", 0.9);
-}
-
-function switchCamera() {
-  facingMode = facingMode === "user" ? "environment" : "user";
-  startCamera();
-}
-
-cameraBtn.addEventListener("click", startCamera);
-captureBtn.addEventListener("click", capturePhoto);
-closeCameraBtn.addEventListener("click", stopCamera);
-switchCameraBtn.addEventListener("click", switchCamera);
-
-// File & Camera - REMOVED OLD CAMERA INPUT
-
-function sendImage(url, self = true) {
-  const wrapper = document.createElement("div");
-  wrapper.className = "message-wrapper " + (self ? "self" : "other");
-
-  const container = document.createElement("div");
-  const bubble = document.createElement("div");
-  bubble.className = "bubble " + (self ? "self" : "other");
-  bubble.style.padding = "4px";
-
-  const img = document.createElement("img");
-  img.src = url;
-  img.style.maxHeight = "160px"; img.style.borderRadius="12px"; img.style.display="block"; img.style.maxWidth="100%";
-
-  const timestamp = document.createElement("div");
-  timestamp.className = "timestamp " + (self ? "self" : "");
-  timestamp.textContent = getTime();
-  if(self){ const icon = document.createElement("i"); icon.className="fa-solid fa-check-double"; icon.style.marginLeft="4px"; icon.style.color="#4fc3f7"; timestamp.appendChild(icon); }
-
-  bubble.appendChild(img);
-  container.appendChild(bubble);
-  container.appendChild(timestamp);
-  wrapper.appendChild(container);
-  chatBody.appendChild(wrapper);
-  scrollBottom();
-}
-
-// Ellipsis menu
-ellipsisBtn.addEventListener("click", (e) => {
-  e.stopPropagation();
-  menuDropdown.classList.toggle("show");
-});
-
-document.addEventListener("click", e => {
-  if(!menuDropdown.contains(e.target) && e.target !== ellipsisBtn){
-    menuDropdown.classList.remove("show");
-  }
-});
-
-// Clear chat functionality
-document.getElementById("clearChatBtn").addEventListener("click", (e) => {
-  e.preventDefault();
-  menuDropdown.classList.remove("show");
-  document.getElementById("clearChatModal").style.display = "flex";
-});
-
-// Clear Chat Modal Actions - Step 1
-document.getElementById("cancelClearBtn").addEventListener("click", () => {
-  document.getElementById("clearChatModal").style.display = "none";
-});
-
-document.getElementById("confirmClearBtn").addEventListener("click", () => {
-  // Close first modal and open second modal
-  document.getElementById("clearChatModal").style.display = "none";
-  document.getElementById("clearChatFinalModal").style.display = "flex";
-});
-
-// Close clear modal on overlay click
-document.getElementById("clearChatModal").addEventListener("click", (e) => {
-  if (e.target.id === "clearChatModal") {
-    document.getElementById("clearChatModal").style.display = "none";
-  }
-});
-
-// Clear Chat Modal Actions - Step 2 (Final)
-document.getElementById("cancelFinalClearBtn").addEventListener("click", () => {
-  // Close final modal and back to first modal
-  document.getElementById("clearChatFinalModal").style.display = "none";
-  document.getElementById("clearChatModal").style.display = "flex";
-});
-
-document.getElementById("confirmFinalClearBtn").addEventListener("click", () => {
-  // Close modal and show loading
-  document.getElementById("clearChatFinalModal").style.display = "none";
-  
-  // Count messages to determine loading time
-  const messageCount = chatBody.children.length;
-  const baseTime = 500; // minimum 500ms
-  const timePerMessage = 50; // 50ms per message
-  const loadingTime = Math.min(baseTime + (messageCount * timePerMessage), 3000); // max 3 seconds
-  
-  // Show loading modal
-  showLoadingModal('Menghapus Pesan', 'Menghapus ' + messageCount + ' pesan...', loadingTime, () => {
-    // Clear chat after loading
-    chatBody.innerHTML = '';
   });
-});
-
-// Close final clear modal on overlay click
-document.getElementById("clearChatFinalModal").addEventListener("click", (e) => {
-  if (e.target.id === "clearChatFinalModal") {
-    document.getElementById("clearChatFinalModal").style.display = "none";
-  }
-});
-
-// Logout functionality
-document.getElementById("logoutBtn").addEventListener("click", (e) => {
-  e.preventDefault();
-  menuDropdown.classList.remove("show");
-  document.getElementById("logoutModal").style.display = "flex";
-});
-
-// Logout Modal Actions
-document.getElementById("cancelLogoutBtn").addEventListener("click", () => {
-  document.getElementById("logoutModal").style.display = "none";
-});
-
-document.getElementById("confirmLogoutBtn").addEventListener("click", () => {
-  // Close modal and show loading
-  document.getElementById("logoutModal").style.display = "none";
-  
-  // Show loading modal for logout
-  showLoadingModal('Logout', 'Mengakhiri sesi Anda...', 1500, () => {
-    // Submit logout form after loading
-    document.getElementById("logoutForm").submit();
-  });
-});
-
-// Close logout modal on overlay click
-document.getElementById("logoutModal").addEventListener("click", (e) => {
-  if (e.target.id === "logoutModal") {
-    document.getElementById("logoutModal").style.display = "none";
-  }
-});
-
-// Loading Modal Function
-function showLoadingModal(title, message, duration, callback) {
-  const loadingModal = document.getElementById('loadingModal');
-  const loadingTitle = document.getElementById('loadingTitle');
-  const loadingMessage = document.getElementById('loadingMessage');
-  const loadingProgress = document.getElementById('loadingProgress');
-  
-  // Set text
-  loadingTitle.textContent = title;
-  loadingMessage.textContent = message;
-  
-  // Show modal
-  loadingModal.style.display = 'flex';
-  
-  // Animate progress bar
-  loadingProgress.style.width = '0%';
-  
-  const startTime = Date.now();
-  const progressInterval = setInterval(() => {
-    const elapsed = Date.now() - startTime;
-    const progress = Math.min((elapsed / duration) * 100, 100);
-    loadingProgress.style.width = progress + '%';
-    
-    if (progress >= 100) {
-      clearInterval(progressInterval);
-    }
-  }, 50);
-  
-  // Hide modal and execute callback after duration
-  setTimeout(() => {
-    clearInterval(progressInterval);
-    loadingProgress.style.width = '100%';
-    
-    setTimeout(() => {
-      loadingModal.style.display = 'none';
-      if (callback) callback();
-    }, 200);
-  }, duration);
 }
+
+// Confirm end session button in modal - REMOVED (now handled in modal file itself)
+
+// Check session CS status on page load and auto-check every 10 seconds
+document.addEventListener('DOMContentLoaded', () => {
+  // Check session CS status on page load
+  window.checkSessionHasCS();
+  
+  // Auto-check setiap 10 detik untuk realtime update
+  setInterval(() => {
+    window.checkSessionHasCS();
+  }, 10000); // 10 detik
+});
+
+// Also check when messages are loaded
+window.addEventListener('messagesLoaded', () => {
+  window.checkSessionHasCS();
+});
 </script>
+
+<!-- Include JS modules -->
+<!-- WebSocket Real-time -->
+@vite(['resources/js/app.js'])
+
+<!-- UI utilities and message rendering (needed by WebSocket) -->
+<script src="{{ asset('js/chat-ui.js') }}"></script>
+<script src="{{ asset('js/chat-file-handler.js') }}"></script>
+
+<!-- Polling (COMMENTED - using WebSocket instead) -->
+<!--
+<script src="{{ asset('js/chat-messages.js') }}"></script>
+-->
+
+<!-- WebSocket implementation -->
+<script src="{{ asset('js/chat-websocket.js') }}"></script>
+<script src="{{ asset('js/chat-send.js') }}"></script>
+<script src="{{ asset('js/chat-modal.js') }}"></script>
+
 </body>
 </html>

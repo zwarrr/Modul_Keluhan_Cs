@@ -23,7 +23,6 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'address',
         'phone_number',
     ];
 
@@ -45,21 +44,16 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    // Relasi: User sebagai member dalam chat_sesi
-    public function chatSesiSebagaiMember()
+    // Relasi: User sebagai CS dalam session
+    public function sessions()
     {
-        return $this->hasMany(Chat_sesi::class, 'member_id');
+        return $this->hasMany(Session::class, 'cs_id');
     }
 
-    // Relasi: User sebagai CS dalam chat_sesi
-    public function chatSesiSebagaiCs()
+    // Relasi: Pesan yang dikirim user (CS)
+    public function chats()
     {
-        return $this->hasMany(Chat_sesi::class, 'cs_id');
-    }
-
-    // Relasi: Pesan yang dikirim user
-    public function pesan()
-    {
-        return $this->hasMany(Pesan::class, 'user_id');
+        return $this->hasMany(Chat::class, 'sender_id')
+            ->where('sender_type', 'cs');
     }
 }
